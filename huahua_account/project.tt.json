@@ -1,0 +1,9 @@
+{
+  "miniprogramRoot": "./",
+  "projectname": "huahua_account",
+  "appid": "testAppId",
+  "setting": {
+    "es6": false,
+    "minified": false
+  }
+}
