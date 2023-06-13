@@ -1,0 +1,78 @@
+type (
+	LoginReq {
+		Code      string `json:"code,omitempty,optional"`
+		AvatarUrl string `json:"avatarUrl,optional"`
+		Name      string `json:"name,optional"`
+	}
+
+	LoginReply {
+		Id           int    `json:"id,omitempty"`
+		Name         string `json:"name,omitempty"`
+		AccessToken  string `json:"accessToken,omitempty"`
+		AccessExpire int    `json:"accessxpire,omitempty"`
+		RefreshAfter int    `json:"refreshAfter,omitempty"`
+		AvatarUrl    string `json:"avatarUrl"`
+	}
+
+	AcBook {
+		Id          int    `json:"id"`
+		Name        string `json:"name"`
+		CreatedTime int    `json:"createdTime"`
+		Tp          int    `json:"tp"`
+		Uid         int    `json:"uid"`
+	}
+	Tag {
+		Id          int    `json:"id"`
+		Name        string `json:"name"`
+		CreatedTime int    `json:"createdTime"`
+		Priority    int    `json:"priority"`
+	}
+	Journal {
+		Id       int    `json:"id"`
+		Name     string `json:"name"`
+		Date     int    `json:"date"`
+		Tid      int    `json:"tid"`
+		Tname    string `json:"tname"`
+		Amount   int    `json:"amount"`
+		Notes    string `json:"notes"`
+		AcBookId int    `json:"ac_book_id"`
+		Uid      int    `json:"uid"`
+	}
+)
+
+service account-api {
+	@server(
+		handler: login
+	)
+	post /login (LoginReq) returns (LoginReply)
+}
+
+@server (
+	jwt :Auth
+)
+service account-api {
+	
+	@server(
+		handler: acBookList
+	)
+	get /ac_book  returns ([]*AcBook)
+	
+	@server(
+		handler: tagList
+	)
+	get /tag  returns ([]*Tag)
+	
+	@server(
+		handler: createTag
+	)
+	post /tag (Tag) returns (Tag)
+	@server(
+		handler: createJournal
+	)
+	post /journal (Journal) returns (Journal)
+	@server(
+		handler: journalList
+	)
+	get /journal (Journal) returns ([]*Journal)
+	
+}
