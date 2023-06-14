@@ -8,10 +8,10 @@ import (
 	"huahua_account_backend/account/internal/svc"
 )
 
-func acBookListHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func BookListHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		l := logic.NewAcBookListLogic(r.Context(), svcCtx)
-		resp, err := l.AcBookList()
+		l := logic.NewBookListLogic(r.Context(), svcCtx)
+		resp, err := l.BookList()
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {
