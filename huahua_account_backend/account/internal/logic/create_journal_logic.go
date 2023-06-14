@@ -29,28 +29,28 @@ func (l *CreateJournalLogic) CreateJournal(req *types.Journal) (resp *types.Jour
 
 	uid := getUserID(l.ctx)
 
-	journal := &model.AcBookJournal{
-		Amount:   req.Amount,
-		Date:     time.Unix(int64(req.Date), 0),
-		Tid:      req.Tid,
-		Tname:    req.Tname,
-		Notes:    req.Notes,
-		AcBookId: req.AcBookId,
-		Uid:      uid,
+	journal := &model.BookJournal{
+		Amount: req.Amount,
+		Date:   time.Unix(int64(req.Date), 0),
+		Tid:    req.Tid,
+		Tname:  req.Tname,
+		Record: req.Record,
+		BookID: req.BookID,
+		Uid:    uid,
 	}
-	err = l.svcCtx.AcBookJournalModel.Create(context.Background(), journal)
+	err = l.svcCtx.BookJournalModel.Create(context.Background(), journal)
 	if err != nil {
 		return nil, err
 	}
 	resp = &types.Journal{
-		Id:       journal.Id,
-		Amount:   journal.Amount,
-		Date:     int(journal.Date.Unix()),
-		Tid:      journal.Tid,
-		Tname:    journal.Tname,
-		Notes:    journal.Notes,
-		AcBookId: journal.AcBookId,
-		Uid:      journal.Uid,
+		ID:     journal.ID,
+		Amount: journal.Amount,
+		Date:   int(journal.Date.Unix()),
+		Tid:    journal.Tid,
+		Tname:  journal.Tname,
+		Record: journal.Record,
+		BookID: journal.BookID,
+		Uid:    journal.Uid,
 	}
 
 	return

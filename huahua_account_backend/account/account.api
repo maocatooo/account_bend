@@ -6,7 +6,7 @@ type (
 	}
 
 	LoginReply {
-		Id           int    `json:"id,omitempty"`
+		ID           string `json:"id,omitempty"`
 		Name         string `json:"name,omitempty"`
 		AccessToken  string `json:"accessToken,omitempty"`
 		AccessExpire int    `json:"accessxpire,omitempty"`
@@ -14,29 +14,29 @@ type (
 		AvatarUrl    string `json:"avatarUrl"`
 	}
 
-	AcBook {
-		Id          int    `json:"id"`
+	Book {
+		ID          string `json:"id"`
 		Name        string `json:"name"`
 		CreatedTime int    `json:"createdTime"`
 		Tp          int    `json:"tp"`
-		Uid         int    `json:"uid"`
+		Uid         string `json:"uid"`
 	}
 	Tag {
-		Id          int    `json:"id"`
+		ID          string `json:"id"`
 		Name        string `json:"name"`
 		CreatedTime int    `json:"createdTime"`
 		Priority    int    `json:"priority"`
 	}
 	Journal {
-		Id       int    `json:"id"`
-		Name     string `json:"name"`
-		Date     int    `json:"date"`
-		Tid      int    `json:"tid"`
-		Tname    string `json:"tname"`
-		Amount   int    `json:"amount"`
-		Notes    string `json:"notes"`
-		AcBookId int    `json:"ac_book_id"`
-		Uid      int    `json:"uid"`
+		ID     string `json:"id"`
+		Name   string `json:"name"`
+		Date   int    `json:"date"`
+		Tid    string `json:"tid"`
+		Tname  string `json:"tname"`
+		Amount int    `json:"amount"`
+		Record string `json:"record"`
+		BookID string `json:"BookID"`
+		Uid    string `json:"uid"`
 	}
 )
 
@@ -51,17 +51,17 @@ service account-api {
 	jwt :Auth
 )
 service account-api {
-	
+
 	@server(
-		handler: acBookList
+		handler: BookList
 	)
-	get /ac_book  returns ([]*AcBook)
-	
+	get /book  returns ([]*Book)
+
 	@server(
 		handler: tagList
 	)
 	get /tag  returns ([]*Tag)
-	
+
 	@server(
 		handler: createTag
 	)
@@ -74,5 +74,5 @@ service account-api {
 		handler: journalList
 	)
 	get /journal (Journal) returns ([]*Journal)
-	
+
 }

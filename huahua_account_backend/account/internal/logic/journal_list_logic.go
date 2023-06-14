@@ -25,21 +25,21 @@ func NewJournalListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Journ
 
 func (l *JournalListLogic) JournalList(req *types.Journal) (resp []*types.Journal, err error) {
 
-	journals, err := l.svcCtx.AcBookJournalModel.FindByBookId(context.Background(), req.AcBookId)
+	journals, err := l.svcCtx.BookJournalModel.FindByBookId(context.Background(), req.BookID)
 	if err != nil {
 		return
 	}
 
 	for _, journal := range journals {
 		resp = append(resp, &types.Journal{
-			Id:       journal.Id,
-			Amount:   journal.Amount,
-			Date:     int(journal.Date.Unix()),
-			Tid:      journal.Tid,
-			Tname:    journal.Tname,
-			Notes:    journal.Notes,
-			AcBookId: journal.AcBookId,
-			Uid:      journal.Uid,
+			ID:     journal.ID,
+			Amount: journal.Amount,
+			Date:   int(journal.Date.Unix()),
+			Tid:    journal.Tid,
+			Tname:  journal.Tname,
+			Record: journal.Record,
+			BookID: journal.BookID,
+			Uid:    journal.Uid,
 		})
 	}
 

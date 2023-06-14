@@ -8,31 +8,31 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type AcBookListLogic struct {
+type BookListLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewAcBookListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AcBookListLogic {
-	return &AcBookListLogic{
+func NewBookListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *BookListLogic {
+	return &BookListLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *AcBookListLogic) AcBookList() (resp []*types.AcBook, err error) {
+func (l *BookListLogic) BookList() (resp []*types.Book, err error) {
 
 	uid := getUserID(l.ctx)
 
-	res, err := l.svcCtx.BookModel.FindByUid(context.Background(), uid)
+	res, err := l.svcCtx.BookModel.FindByUid(l.ctx, uid)
 	if err != nil {
 		return nil, err
 	}
 	for _, item := range res {
-		resp = append(resp, &types.AcBook{
-			Id:          item.ID,
+		resp = append(resp, &types.Book{
+			ID:          item.ID,
 			Name:        item.Name,
 			CreatedTime: int(item.CreatedAt.UnixMilli()),
 			Tp:          item.Tp,

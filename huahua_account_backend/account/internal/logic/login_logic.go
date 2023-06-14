@@ -31,16 +31,16 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 
 const userIdKey = "userId"
 
-func getUserID(ctx context.Context) int {
+func getUserID(ctx context.Context) string {
 	v := ctx.Value(userIdKey)
 	if v != nil {
-		uid, _ := v.(json.Number).Int64()
-		return int(uid)
+		uid, _ := v.(string)
+		return uid
 	}
-	return 0
+	return ""
 }
 
-func (l *LoginLogic) getJwtToken(userId int) string {
+func (l *LoginLogic) getJwtToken(userId string) string {
 	claims := make(jwt.MapClaims)
 	iat := time.Now().UnixMilli() / 1000
 
@@ -72,7 +72,7 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginReply, err err
 			Username: req.Name,
 			LastTime: time.Now(),
 		}
-		err := l.svcCtx.UserModel.Insert(context.Background(), user)
+		err := l.svcCtx.UserModel.Create(context.Background(), user)
 		if err != nil {
 			return nil, err
 		}
@@ -109,7 +109,7 @@ func (l *LoginLogic) GetOpenid(code string) (string, bool) {
 }
 
 func (l *LoginLogic) initUserInfo(ctx context.Context, user *model.User) error {
-	defaultBook := &model.AcBook{
+	defaultBook := &model.Book{
 		Uid:  user.Id,
 		Name: "支出账本",
 	}
@@ -117,22 +117,22 @@ func (l *LoginLogic) initUserInfo(ctx context.Context, user *model.User) error {
 		Uid:  user.Id,
 		Name: "普通消费",
 	}
-	err := l.svcCtx.BookModel.Insert(ctx, defaultBook)
+	err := l.svcCtx.BookModel.Create(ctx, defaultBook)
 	if err != nil {
 		return err
 	}
 
-	err = l.svcCtx.TagModel.Insert(ctx, defaultTag)
+	err = l.svcCtx.TagModel.Create(ctx, defaultTag)
 	if err != nil {
 		return err
 	}
 
-	acTag := &model.AcTag{
+	acTag := &model.TagRel{
 		SID: defaultBook.ID,
 		TID: defaultTag.ID,
 	}
 
-	err = l.svcCtx.TagModel.InsertAcTag(context.Background(), acTag)
+	err = l.svcCtx.TagModel.CreateTagRel(context.Background(), acTag)
 	if err != nil {
 		return err
 	}

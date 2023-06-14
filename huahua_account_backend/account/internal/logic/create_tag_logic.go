@@ -32,12 +32,12 @@ func (l *CreateTagLogic) CreateTag(req *types.Tag) (resp *types.Tag, err error) 
 		Priority: req.Priority,
 	}
 
-	err = l.svcCtx.TagModel.Insert(context.Background(), tag)
+	err = l.svcCtx.TagModel.Create(context.Background(), tag)
 	if err != nil {
 		return
 	}
 	resp = &types.Tag{
-		Id:       tag.ID,
+		ID:       tag.ID,
 		Name:     tag.Name,
 		Priority: tag.Priority,
 	}

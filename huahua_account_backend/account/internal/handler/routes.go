@@ -24,8 +24,8 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodGet,
-				Path:    "/ac_book",
-				Handler: acBookListHandler(serverCtx),
+				Path:    "/book",
+				Handler: BookListHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodGet,

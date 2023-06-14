@@ -6,20 +6,20 @@ import (
 	"time"
 )
 
-type AcTag struct {
-	ID  int `gorm:"primarykey"`
-	SID int `gorm:"column:sid"`
-	TID int `gorm:"column:tid"`
+type TagRel struct {
+	ID  string `gorm:"primarykey"`
+	SID string `gorm:"column:sid"`
+	TID string `gorm:"column:tid"`
 }
 
 type Tag struct {
-	ID          int       `gorm:"primarykey"`
-	Name        string    `gorm:"column:name"`
-	CreatedTime time.Time `gorm:"column:created_time;default:now()"`
-	Icon        string    `gorm:"column:icon"`
-	IconTp      int       `gorm:"column:icon_tp"`
-	Uid         int       `gorm:"column:uid"`
-	Priority    int       `gorm:"column:priority"`
+	ID        string    `gorm:"primarykey"`
+	Name      string    `gorm:"column:name"`
+	CreatedAt time.Time `gorm:"column:created_at;type:TIMESTAMP;default:CURRENT_TIMESTAMP"`
+	Icon      string    `gorm:"column:icon"`
+	IconTp    int       `gorm:"column:icon_tp"`
+	Uid       string    `gorm:"column:uid"`
+	Priority  int       `gorm:"column:priority"`
 }
 
 var _ TagModel = (*customTagModel)(nil)
@@ -29,20 +29,20 @@ func NewTagModel(db *gorm.DB) TagModel {
 }
 
 type TagModel interface {
-	Insert(ctx context.Context, tag *Tag) error
-	FindByUserID(ctx context.Context, uid int) ([]*Tag, error)
-	InsertAcTag(ctx context.Context, at *AcTag) error
+	Create(ctx context.Context, tag *Tag) error
+	FindByUserID(ctx context.Context, uid string) ([]*Tag, error)
+	CreateTagRel(ctx context.Context, at *TagRel) error
 }
 
 type customTagModel struct {
 	db *gorm.DB
 }
 
-func (c *customTagModel) Insert(ctx context.Context, tag *Tag) error {
+func (c *customTagModel) Create(ctx context.Context, tag *Tag) error {
 	return c.db.Create(tag).Error
 }
 
-func (c *customTagModel) FindByUserID(ctx context.Context, uid int) ([]*Tag, error) {
+func (c *customTagModel) FindByUserID(ctx context.Context, uid string) ([]*Tag, error) {
 	var tags []*Tag
 	err := c.db.Where("uid = ?", uid).Find(&tags).Error
 	if err != nil {
@@ -51,6 +51,6 @@ func (c *customTagModel) FindByUserID(ctx context.Context, uid int) ([]*Tag, err
 	return tags, nil
 }
 
-func (c *customTagModel) InsertAcTag(ctx context.Context, at *AcTag) error {
+func (c *customTagModel) CreateTagRel(ctx context.Context, at *TagRel) error {
 	return c.db.Create(at).Error
 }

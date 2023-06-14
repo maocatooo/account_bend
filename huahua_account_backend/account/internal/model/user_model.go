@@ -7,7 +7,7 @@ import (
 )
 
 type User struct {
-	Id           int       `gorm:"primarykey"`
+	Id           string    `gorm:"primarykey"`
 	Username     string    `gorm:"column:username"`
 	Email        string    `gorm:"column:email"`
 	PasswordHash string    `gorm:"column:password_hash"`
@@ -27,7 +27,7 @@ func NewUserModel(db *gorm.DB) UserModel {
 type (
 	UserModel interface {
 		FindByOpenid(context.Context, string) (*User, error)
-		Insert(context.Context, *User) error
+		Create(context.Context, *User) error
 	}
 	customUserModel struct {
 		db *gorm.DB
@@ -43,6 +43,6 @@ func (c *customUserModel) FindByOpenid(ctx context.Context, openid string) (*Use
 	return &res, nil
 }
 
-func (c *customUserModel) Insert(ctx context.Context, user *User) error {
+func (c *customUserModel) Create(ctx context.Context, user *User) error {
 	return c.db.Create(user).Error
 }

@@ -8,7 +8,7 @@ type LoginReq struct {
 }
 
 type LoginReply struct {
-	Id           int    `json:"id,omitempty"`
+	ID           string `json:"id,omitempty"`
 	Name         string `json:"name,omitempty"`
 	AccessToken  string `json:"accessToken,omitempty"`
 	AccessExpire int    `json:"accessxpire,omitempty"`
@@ -16,29 +16,29 @@ type LoginReply struct {
 	AvatarUrl    string `json:"avatarUrl"`
 }
 
-type AcBook struct {
-	Id          int    `json:"id"`
+type Book struct {
+	ID          string `json:"id"`
 	Name        string `json:"name"`
 	CreatedTime int    `json:"createdTime"`
 	Tp          int    `json:"tp"`
-	Uid         int    `json:"uid"`
+	Uid         string `json:"uid"`
 }
 
 type Tag struct {
-	Id          int    `json:"id"`
+	ID          string `json:"id"`
 	Name        string `json:"name"`
 	CreatedTime int    `json:"createdTime"`
 	Priority    int    `json:"priority"`
 }
 
 type Journal struct {
-	Id       int    `json:"id"`
-	Name     string `json:"name"`
-	Date     int    `json:"date"`
-	Tid      int    `json:"tid"`
-	Tname    string `json:"tname"`
-	Amount   int    `json:"amount"`
-	Notes    string `json:"notes"`
-	AcBookId int    `json:"ac_book_id"`
-	Uid      int    `json:"uid"`
+	ID     string `json:"id"`
+	Name   string `json:"name"`
+	Date   int    `json:"date"`
+	Tid    string `json:"tid"`
+	Tname  string `json:"tname"`
+	Amount int    `json:"amount"`
+	Record string `json:"record"`
+	BookID string `json:"BookID"`
+	Uid    string `json:"uid"`
 }

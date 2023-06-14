@@ -9,21 +9,21 @@ import (
 )
 
 type ServiceContext struct {
-	Config             config.Config
-	UserModel          model.UserModel
-	BookModel          model.AcBookModel
-	TagModel           model.TagModel
-	AcBookJournalModel model.AcBookJournalModel
+	Config           config.Config
+	UserModel        model.UserModel
+	BookModel        model.BookModel
+	TagModel         model.TagModel
+	BookJournalModel model.BookJournalModel
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	db := NewDatabase(c)
 	return &ServiceContext{
-		Config:             c,
-		UserModel:          model.NewUserModel(db),
-		BookModel:          model.NewAcBookModel(db),
-		TagModel:           model.NewTagModel(db),
-		AcBookJournalModel: model.NewAcBookJournalModel(db),
+		Config:           c,
+		UserModel:        model.NewUserModel(db),
+		BookModel:        model.NewBookModel(db),
+		TagModel:         model.NewTagModel(db),
+		BookJournalModel: model.NewBookJournalModel(db),
 	}
 }
 func NewDatabase(cfg config.Config) *gorm.DB {

@@ -34,9 +34,9 @@ func (l *TagListLogic) TagList() (resp []*types.Tag, err error) {
 	resp = make([]*types.Tag, len(res))
 	for i, v := range res {
 		resp[i] = &types.Tag{
-			Id:          v.ID,
+			ID:          v.ID,
 			Name:        v.Name,
-			CreatedTime: int(v.CreatedTime.UnixMilli()),
+			CreatedTime: int(v.CreatedAt.UnixMilli()),
 			Priority:    v.Priority,
 		}
 	}
