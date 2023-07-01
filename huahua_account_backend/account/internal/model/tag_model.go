@@ -3,6 +3,7 @@ package model
 import (
 	"context"
 	"gorm.io/gorm"
+	"huahua_account_backend/account/utils/uuid"
 	"time"
 )
 
@@ -39,6 +40,9 @@ type customTagModel struct {
 }
 
 func (c *customTagModel) Create(ctx context.Context, tag *Tag) error {
+	if tag.ID == "" {
+		tag.ID = uuid.New()
+	}
 	return c.db.Create(tag).Error
 }
 

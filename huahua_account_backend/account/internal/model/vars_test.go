@@ -13,7 +13,7 @@ var db *gorm.DB
 
 func TestMain(t *testing.M) {
 	conf := config.Config{}
-	conf.Mysql.DataSource = "root:123456@tcp(127.0.0.1:3306)/huahua_account_backend"
+	conf.Mysql.DataSource = "root:123456@tcp(127.0.0.1:3306)/huahua_account_backend?parseTime=true&loc=Local"
 	db = NewDatabase(conf)
 
 	db.AutoMigrate(

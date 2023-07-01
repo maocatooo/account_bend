@@ -3,16 +3,17 @@ package model
 import (
 	"context"
 	"gorm.io/gorm"
+	"huahua_account_backend/account/utils/uuid"
 	"time"
 )
 
 type User struct {
-	Id           string    `gorm:"primarykey"`
+	ID           string    `gorm:"primarykey"`
 	Username     string    `gorm:"column:username"`
 	Email        string    `gorm:"column:email"`
 	PasswordHash string    `gorm:"column:password_hash"`
 	Openid       string    `gorm:"column:openid"`
-	LastTime     time.Time `gorm:"column:last_time"`
+	LastTime     time.Time `gorm:"column:last_time;type:TIMESTAMP;default:CURRENT_TIMESTAMP"`
 	Avatar       string    `gorm:"column:avatar"`
 }
 
@@ -44,5 +45,8 @@ func (c *customUserModel) FindByOpenid(ctx context.Context, openid string) (*Use
 }
 
 func (c *customUserModel) Create(ctx context.Context, user *User) error {
+	if user.ID == "" {
+		user.ID = uuid.New()
+	}
 	return c.db.Create(user).Error
 }

@@ -13,7 +13,7 @@ type BookJournal struct {
 	Tid       string    `gorm:"column:tid"`
 	Tname     string    `gorm:"column:tname"`
 
-	Date   time.Time `gorm:"column:date"`
+	Date   time.Time `gorm:"column:date;type:TIMESTAMP;default:CURRENT_TIMESTAMP"`
 	Amount int       `gorm:"column:amount"`
 	Record string    `gorm:"column:record"`
 	BookID string    `gorm:"column:book_id"`
@@ -39,7 +39,9 @@ type (
 )
 
 func (c *customBookJournalModel) Create(ctx context.Context, m *BookJournal) error {
-	m.ID = uuid.New()
+	if m.ID == "" {
+		m.ID = uuid.New()
+	}
 	return c.db.Create(m).Error
 }
 

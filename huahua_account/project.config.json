@@ -2,7 +2,7 @@
     "miniprogramRoot": "dist/",
     "projectname": "huahua_account",
     "description": "dd",
-    "appid": "wxa8308224f82aa3a3",
+    "appid": "wxa891caa4f40cf683",
     "setting": {
         "urlCheck": true,
         "es6": false,
@@ -15,7 +15,7 @@
             "disablePlugins": [],
             "outputPath": ""
         },
-        "condition": false
+        "condition": true
     },
     "compileType": "miniprogram",
     "libVersion": "2.31.0",

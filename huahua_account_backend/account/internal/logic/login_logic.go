@@ -86,7 +86,7 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginReply, err err
 	resp = new(types.LoginReply)
 	resp.Name = user.Username
 	resp.AvatarUrl = req.AvatarUrl
-	resp.AccessToken = l.getJwtToken(user.Id)
+	resp.AccessToken = l.getJwtToken(user.ID)
 	resp.AccessExpire = l.svcCtx.Config.Auth.AccessExpire
 	return
 }
@@ -110,11 +110,11 @@ func (l *LoginLogic) GetOpenid(code string) (string, bool) {
 
 func (l *LoginLogic) initUserInfo(ctx context.Context, user *model.User) error {
 	defaultBook := &model.Book{
-		Uid:  user.Id,
+		Uid:  user.ID,
 		Name: "支出账本",
 	}
 	defaultTag := &model.Tag{
-		Uid:  user.Id,
+		Uid:  user.ID,
 		Name: "普通消费",
 	}
 	err := l.svcCtx.BookModel.Create(ctx, defaultBook)

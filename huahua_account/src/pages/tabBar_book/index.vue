@@ -30,6 +30,7 @@
 import {defineComponent, reactive, ref, toRefs} from "vue"
 import Taro from "@tarojs/taro"
 import "./index.scss"
+import { getBooks } from "../../api/common";
 
 export default defineComponent({
   name: "SwipeActionDemo22",
@@ -53,7 +54,7 @@ export default defineComponent({
     const state = reactive({
       list: [
         {
-          title: 'item1',
+          title: 'item123',
           isOpened: false,
         },
         {

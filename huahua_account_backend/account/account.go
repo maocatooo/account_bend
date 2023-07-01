@@ -22,7 +22,7 @@ func main() {
 
 	c.RestConf.Middlewares.Recover = false
 	c.RestConf.Middlewares.Shedding = false
-	c.RestConf.Middlewares.Log = false
+	c.RestConf.Middlewares.Log = true
 
 	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()

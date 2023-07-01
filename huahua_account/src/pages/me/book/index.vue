@@ -2,13 +2,13 @@
   <at-list>
     <at-swipe-action
       v-for="(item, index) in list"
-      :key="item.title"
+      :key="item.name"
       :options="OPTIONS"
       :isOpened="item.isOpened"
       @click="handleClicked"
       @opened="handleSingle(index)"
     >
-      <at-list-item :title="item.title"  hasBorder />
+      <at-list-item :title="item.name"  hasBorder />
     </at-swipe-action>
   </at-list>
 </template>
@@ -17,6 +17,7 @@
 import {defineComponent, reactive, ref, toRefs} from "vue"
 import Taro from "@tarojs/taro"
 import "./index.scss"
+import { getBooks } from "../../../api/common";
 
 export default defineComponent({
   setup() {
@@ -35,40 +36,22 @@ export default defineComponent({
         }
       }
     ])
+    console.log(getBooks())
+    const books = getBooks().map((item) => {
+      item.isOpened = false
+      return item
+    })
+
     const currentIndex = ref(0)
     const state = reactive({
-      list: [
-        {
-          title: 'item1',
-          isOpened: false,
-        },
-        {
-          title: 'item2',
-          isOpened: false,
-        },
-        {
-          title: 'item3',
-          isOpened: false,
-        },
-        {
-          title: 'item4',
-          isOpened: false,
-        },
-        {
-          title: 'item5',
-          isOpened: false,
-        },
-        {
-          title: 'item6',
-          isOpened: false,
-        }
-      ]
+      list: books
     })
     function handleClick(item, key) {
       showToast(`点击了${item.text}按钮，key: ${key}`)
       console.log(arguments)
     }
     function handleClicked(item, key) {
+      console.log("i am me book")
       showToast(`点击了${item.text}按钮，key: ${key}, index:${currentIndex.value}`)
       if (item.text == "确认") {
       }else{

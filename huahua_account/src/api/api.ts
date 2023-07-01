@@ -31,11 +31,15 @@ const  req = async function (
   return res
 }
 
-
 const Login = async ({code, avatarUrl, name}) => {
   return await req("/login", "post",{code,avatarUrl, name} )
 }
-const AcBooks = async () => {
-  return await req("/ac_book", "get",{} )
+const Books = async () => {
+  return await req("/book", "get",{} )
 }
-export  {Login, AcBooks}
+
+const Tags = async () => {
+  return await req("/tag", "get",{} )
+}
+export  {Login, Books, Tags}
+

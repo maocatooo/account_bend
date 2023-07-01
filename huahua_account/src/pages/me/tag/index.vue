@@ -2,13 +2,13 @@
   <at-list>
     <at-swipe-action
       v-for="(item, index) in list"
-      :key="item.title"
+      :key="item.name"
       :options="OPTIONS"
       :isOpened="item.isOpened"
       @click="handleClicked"
       @opened="handleSingle(index)"
     >
-      <at-list-item :title="item.title"  hasBorder />
+      <at-list-item :title="item.name"  hasBorder />
     </at-swipe-action>
   </at-list>
 </template>
@@ -17,6 +17,7 @@
 import {defineComponent, reactive, ref, toRefs} from "vue"
 import Taro from "@tarojs/taro"
 import "./index.scss"
+import { getTags } from "../../../api/common";
 
 export default defineComponent({
   name: "SwipeActionDemo3",
@@ -36,35 +37,14 @@ export default defineComponent({
         }
       }
     ])
+    const tags = getTags().map( (item) => {
+      item.isOpened = false
+      return item
+    } )
+
     const currentIndex = ref(0)
     const state = reactive({
-      isOpened2: false,
-      list: [
-        {
-          title: 'item1',
-          isOpened: false,
-        },
-        {
-          title: 'item2',
-          isOpened: false,
-        },
-        {
-          title: 'item3',
-          isOpened: false,
-        },
-        {
-          title: 'item4',
-          isOpened: false,
-        },
-        {
-          title: 'item5',
-          isOpened: false,
-        },
-        {
-          title: 'item6',
-          isOpened: false,
-        }
-      ]
+      list: tags
     })
     function handleClick(item, key) {
       showToast(`点击了${item.text}按钮，key: ${key}`)
