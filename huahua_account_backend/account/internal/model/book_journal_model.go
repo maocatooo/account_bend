@@ -2,6 +2,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"gorm.io/gorm"
 	"huahua_account_backend/account/utils/uuid"
 	"time"
@@ -14,7 +15,7 @@ type BookJournal struct {
 	Tname     string    `gorm:"column:tname"`
 
 	Date   time.Time `gorm:"column:date;type:TIMESTAMP;default:CURRENT_TIMESTAMP"`
-	Amount int       `gorm:"column:amount"`
+	Amount string    `gorm:"column:amount"`
 	Record string    `gorm:"column:record"`
 	BookID string    `gorm:"column:book_id"`
 	Uid    string    `gorm:"column:uid"`
@@ -47,9 +48,10 @@ func (c *customBookJournalModel) Create(ctx context.Context, m *BookJournal) err
 
 func (c *customBookJournalModel) FindByBookId(ctx context.Context, bookId string) ([]*BookJournal, error) {
 	var journals []*BookJournal
-	err := c.db.Where("book_id = ?", bookId).Order("created_at desc").Find(&journals).Error
+	err := c.db.Where("book_id = ?", bookId).Debug().Order("created_at desc").Find(&journals).Error
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println(journals)
 	return journals, nil
 }

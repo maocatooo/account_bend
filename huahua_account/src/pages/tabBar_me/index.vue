@@ -5,7 +5,7 @@
         :title='info.name'
         arrow='right'
         :thumb='avatarUrl'
-        @click="setUserProfile()"
+        @click="login()"
       />
       <AtListItem title='account books' @click="redirectBook" hasBorder :extraText='info.booksCount' arrow='right'/>
       <AtListItem title='tags' :extraText='info.tagsCount' hasBorder arrow='right' @click="redirectTag"/>
@@ -58,6 +58,7 @@ export default {
 
     return {
       info,
+      login,
       redirectBook: () => {
         Taro.navigateTo({
           url: '/pages/me/book/index'

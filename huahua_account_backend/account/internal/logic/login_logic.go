@@ -60,7 +60,7 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginReply, err err
 
 	openid, ok := l.GetOpenid(req.Code)
 	if !ok {
-		return nil, fmt.Errorf("")
+		return nil, fmt.Errorf("code is invalid")
 	}
 	user, err := l.svcCtx.UserModel.FindByOpenid(context.Background(), openid)
 	if err != nil {
@@ -94,15 +94,18 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginReply, err err
 func (l *LoginLogic) GetOpenid(code string) (string, bool) {
 	var url = fmt.Sprintf("https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code",
 		l.svcCtx.Config.Wechat.AppID, l.svcCtx.Config.Wechat.AppSecret, code)
+
 	res, err := http.Get(url)
 	if err != nil {
 		return "", false
 	}
 	body, _ := io.ReadAll(res.Body)
-	fmt.Println(string(body))
 	var r map[string]interface{}
 	err = json.Unmarshal(body, &r)
 	if err != nil {
+		return "", false
+	}
+	if r["openid"] == nil {
 		return "", false
 	}
 	return r["openid"].(string), true

@@ -9,16 +9,25 @@
       >
         <at-list-item :title="dateSel" hasBorder/>
       </picker>
-
+      <picker
+        mode='selector'
+        rangeKey="name"
+        :range="bookSelector"
+        :value="bookSelectorValue"
+        @change="handleBookChange"
+        @cancel="handleCancel"
+      >
+        <at-list-item :title="bookSelector[bookSelectorValue].name" hasBorder/>
+      </picker>
       <at-swipe-action
-        v-for="(item, index) in list"
-        :key="item.title"
+        v-for="(item, index) in bookJournals"
+        :key="item.id"
         :options="OPTIONS"
         :isOpened="item.isOpened"
         @click="(item, key) => handleClicked(item, key ,index)"
         @opened="handleSingle(index)"
       >
-        <at-list-item :title="item.title" hasBorder/>
+        <at-list-item :title="item.tname" hasBorder/>
       </at-swipe-action>
     </at-list>
   </view>
@@ -27,13 +36,24 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, reactive, ref, toRefs} from "vue"
+import {defineComponent, reactive, ref, onMounted} from "vue"
 import Taro from "@tarojs/taro"
 import "./index.scss"
 import { getBooks } from "../../api/common";
+import {BookJournals} from "../../api/api";
 
 export default defineComponent({
   name: "SwipeActionDemo22",
+  async  mounted() {
+    console.log('onMounted')
+    const data:[] = await  BookJournals(this.bookSelector[0].id)
+    data.map((item) => {
+      item.isOpened = false
+      return item
+    })
+    console.log(data)
+    this.bookJournals.push(...data)
+  },
   setup() {
     const OPTIONS = ref([
       {
@@ -51,34 +71,8 @@ export default defineComponent({
       }
     ])
     const dateSel = ref('2022-06')
-    const state = reactive({
-      list: [
-        {
-          title: 'item123',
-          isOpened: false,
-        },
-        {
-          title: 'item2',
-          isOpened: false,
-        },
-        {
-          title: 'item3',
-          isOpened: false,
-        },
-        {
-          title: 'item4',
-          isOpened: false,
-        },
-        {
-          title: 'item5',
-          isOpened: false,
-        },
-        {
-          title: 'item6',
-          isOpened: false,
-        }
-      ]
-    })
+    const bookSelector = getBooks()
+    let bookJournals =  reactive([])
 
     function handleClick(item, key) {
       showToast(`点击了${item.text}按钮，key: ${key}`)
@@ -90,12 +84,12 @@ export default defineComponent({
       console.log(key === 1)
       if (key === 1) {
       } else {
-        state.list = state.list.filter((_item, key) => key !== index)
+        bookJournals = bookJournals.filter((_item, key) => key !== index)
       }
     }
 
     function handleSingle(index) {
-      state.list = state.list.map((item, key) => {
+      bookJournals = bookJournals.map((item, key) => {
         item.isOpened = key === index
         return item
       })
@@ -110,14 +104,22 @@ export default defineComponent({
         title: titleMsg
       })
     }
-
+    const bookSelectorValue = ref(0)
     return {
-      ...toRefs(state),
+      bookJournals,
       OPTIONS,
       dateSel,
+      bookSelector,
+      bookSelectorValue,
       handleClick,
       handleDateChange,
       handleClicked,
+      handleBookChange:(e)=>{
+        bookSelectorValue.value = e.detail.value
+      },
+      handleCancel:(e)=>{
+        console.log('handleCancel', e)
+      },
       handleSingle
     }
   }

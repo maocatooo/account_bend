@@ -51,6 +51,7 @@
     "@tarojs/shared": "3.6.5",
     "@tarojs/taro": "3.6.5",
     "element-plus": "^2.3.3",
+    "moment": "^2.29.4",
     "taro-ui-vue3": "^1.0.0-alpha.21",
     "vue": "^3.0.0"
   },

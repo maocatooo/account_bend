@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"fmt"
 	"huahua_account_backend/account/internal/model"
 	"time"
 
@@ -31,13 +32,14 @@ func (l *CreateJournalLogic) CreateJournal(req *types.Journal) (resp *types.Jour
 
 	journal := &model.BookJournal{
 		Amount: req.Amount,
-		Date:   time.Unix(int64(req.Date), 0),
+		Date:   time.UnixMilli(int64(req.Date)),
 		Tid:    req.Tid,
 		Tname:  req.Tname,
 		Record: req.Record,
 		BookID: req.BookID,
 		Uid:    uid,
 	}
+	fmt.Println(journal)
 	err = l.svcCtx.BookJournalModel.Create(context.Background(), journal)
 	if err != nil {
 		return nil, err

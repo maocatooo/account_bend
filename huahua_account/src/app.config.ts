@@ -7,9 +7,12 @@ export default defineAppConfig({
     'pages/me/tag/index',
   ],
   window: {
-    backgroundTextStyle: 'light',
+    // backgroundTextStyle: 'light',
     navigationBarBackgroundColor: '#FFF',
     navigationBarTitleText: 'WeChat',
+    "enablePullDownRefresh": true,
+    "onReachBottomDistance": 50,
+    "backgroundTextStyle": "dark",
     navigationBarTextStyle: 'black'
   },
   tabBar: {

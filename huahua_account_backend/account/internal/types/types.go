@@ -2,17 +2,17 @@
 package types
 
 type LoginReq struct {
-	Code      string `json:"code,omitempty,optional"`
+	Code      string `json:"code,optional,optional"`
 	AvatarUrl string `json:"avatarUrl,optional"`
 	Name      string `json:"name,optional"`
 }
 
 type LoginReply struct {
-	ID           string `json:"id,omitempty"`
-	Name         string `json:"name,omitempty"`
-	AccessToken  string `json:"accessToken,omitempty"`
-	AccessExpire int    `json:"accessxpire,omitempty"`
-	RefreshAfter int    `json:"refreshAfter,omitempty"`
+	ID           string `json:"id,optional"`
+	Name         string `json:"name,optional"`
+	AccessToken  string `json:"accessToken,optional"`
+	AccessExpire int    `json:"accessxpire,optional"`
+	RefreshAfter int    `json:"refreshAfter,optional"`
 	AvatarUrl    string `json:"avatarUrl"`
 }
 
@@ -32,13 +32,13 @@ type Tag struct {
 }
 
 type Journal struct {
-	ID     string `json:"id"`
-	Name   string `json:"name"`
-	Date   int    `json:"date"`
-	Tid    string `json:"tid"`
-	Tname  string `json:"tname"`
-	Amount int    `json:"amount"`
-	Record string `json:"record"`
-	BookID string `json:"BookID"`
-	Uid    string `json:"uid"`
+	ID     string `json:"id,optional"`
+	Name   string `json:"name,optional"`
+	Date   int    `json:"date,optional"`
+	Tid    string `json:"tid,optional"`
+	Tname  string `json:"tname,optional"`
+	Amount string `json:"amount,optional"`
+	Record string `json:"record,optional"`
+	BookID string `json:"bookID,optional" form:"bookID"`
+	Uid    string `json:"uid,optional"`
 }
