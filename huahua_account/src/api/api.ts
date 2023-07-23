@@ -1,9 +1,10 @@
 import Taro from "@tarojs/taro"
 import {getToken} from "./common"
-import {CreateBookJournalReq} from "./types"
+import {BookJournalsReq, CreateBookJournalReq, CreateTagReq, UpdateBookJournalReq} from "./types"
 
 // const domain = "http://maocat.cc"
-const domain = "http://127.0.0.1:8888"
+const domain = "https://ac.maocat.cc"
+// const domain = "http://127.0.0.1:8888"
 const  req = async function (
    url:string,
    method:any,
@@ -45,10 +46,21 @@ const Tags = async () => {
 const CreateBookJournal = async (c: CreateBookJournalReq) => {
   return await req("/journal", "post",c)
 }
-
-const BookJournals = async (bookID:string) => {
-  return await req("/journal", "get", {bookID})
+const UpdateBookJournal = async (c: UpdateBookJournalReq) => {
+  return await req("/journal", "put",c)
 }
 
-export  {Login, Books, Tags, CreateBookJournal, BookJournals}
+const DeleteBookJournal = async (id: string) => {
+  return await req("/journal", "delete",{id})
+}
+
+const BookJournals = async (c:BookJournalsReq) => {
+  return await req("/journal", "get", c)
+}
+
+const CreateTag = async (c: CreateTagReq) => {
+  return await req("/tag", "post",c)
+}
+
+export  {Login, Books, Tags, CreateBookJournal, UpdateBookJournal, BookJournals, CreateTag, DeleteBookJournal}
 

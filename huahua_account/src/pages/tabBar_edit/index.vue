@@ -87,7 +87,7 @@ import {reactive, ref} from 'vue'
 import './index.scss'
 import Taro from "@tarojs/taro"
 import {getTags,getBooks} from "../../api/common";
-import {CreateBookJournal} from "../../api/api";
+import {CreateBookJournal, UpdateBookJournal} from "../../api/api";
 import moment from "moment";
 import timePickerColumn from "../../components/picker/index";
 import { AtButton, AtForm, AtInput } from 'taro-ui-vue3'
@@ -97,6 +97,27 @@ export default {
     this.fromData.bookSelector = getBooks()
     console.log('onPullDownRefresh ok')
     Taro.stopPullDownRefresh()
+  },
+  onShow() {
+    const strData = Taro.getCurrentInstance().router.params["data"]
+    if (strData){
+        const data = JSON.parse(strData)
+        this.fromData.name = data.name
+        this.fromData.jid = data.id
+        this.fromData.amount = data.amount
+        this.fromData.record = data.record
+        this.fromData.bookSelector.map((item, index)=>{
+          if (item.id === data.bookID){
+            this.fromData.bookSelectorValue = index
+          }
+        })
+        this.fromData.tagSelector.map((item, index)=>{
+          if (item.id === data.tid){
+            this.fromData.tagSelectorValue = index
+          }
+        })
+        this.fromData.date = moment(data.date).format('YYYY-MM-DD HH:mm')
+    }
   },
   components: {
     timePickerColumn,
@@ -114,6 +135,7 @@ export default {
     const tagSelector = getTags()
     const bookSelector = getBooks()
     const fromData = reactive({
+      jid : "",
       tagSelector: tagSelector,
       tagSelectorValue: 0,
       bookSelector: bookSelector,
@@ -144,7 +166,8 @@ export default {
           })
           return
         }
-        const res  = await CreateBookJournal({
+        const res  = await UpdateBookJournal({
+          id: fromData.jid,
           tid: tagSelector[fromData.tagSelectorValue].id,
           tname: tagSelector[fromData.tagSelectorValue].name,
           amount: fromData.amount,
@@ -153,12 +176,11 @@ export default {
           bookID: bookSelector[fromData.bookSelectorValue].id,
           date: parseInt(moment(fromData.date).format("x"))
         })
-        fromData.amount = ''
-        fromData.name = ''
         Taro.showToast({
           icon: 'none',
-          title: "添加成功"
+          title: "修改成功"
         })
+        Taro.navigateBack()
       },
       onReset (event) {
       },

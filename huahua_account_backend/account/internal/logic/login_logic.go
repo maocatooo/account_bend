@@ -72,20 +72,29 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginReply, err err
 			Username: req.Name,
 			LastTime: time.Now(),
 		}
-		err := l.svcCtx.UserModel.Create(context.Background(), user)
+		err := l.svcCtx.UserModel.Save(context.Background(), user)
 		if err != nil {
 			return nil, err
 		}
-
 		err = l.initUserInfo(context.Background(), user)
 		if err != nil {
 			return nil, err
 		}
-
 	}
+	if req.AvatarUrl != "" {
+		user.Avatar = req.AvatarUrl
+	}
+	if req.Name != "" {
+		user.Username = req.Name
+	}
+	err = l.svcCtx.UserModel.Save(context.Background(), user)
+	if err != nil {
+		return nil, err
+	}
+
 	resp = new(types.LoginReply)
 	resp.Name = user.Username
-	resp.AvatarUrl = req.AvatarUrl
+	resp.AvatarUrl = user.Avatar
 	resp.AccessToken = l.getJwtToken(user.ID)
 	resp.AccessExpire = l.svcCtx.Config.Auth.AccessExpire
 	return

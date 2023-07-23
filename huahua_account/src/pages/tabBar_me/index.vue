@@ -4,17 +4,17 @@
       <AtListItem
         :title='info.name'
         arrow='right'
-        :thumb='avatarUrl'
-        @click="login()"
+        :thumb='info.avatarUrl'
+        @click="setUserProfile()"
       />
-      <AtListItem title='account books' @click="redirectBook" hasBorder :extraText='info.booksCount' arrow='right'/>
-      <AtListItem title='tags' :extraText='info.tagsCount' hasBorder arrow='right' @click="redirectTag"/>
-      <!--      <AtListItem title='tags' disabled extraText='4'  hasBorder arrow='right' @click="handleClick"/>-->
+      <AtListItem title='账簿' @click="redirectBook" hasBorder :extraText='info.booksCount' arrow='right'/>
+      <AtListItem title='标签' :extraText='info.tagsCount' hasBorder arrow='right' @click="redirectTag"/>
     </AtList>
   </view>
 </template>
 
 <script>
+import { AtListItem, AtList } from 'taro-ui-vue3'
 import {reactive, ref} from 'vue'
 import './index.scss'
 import Taro from "@tarojs/taro"
@@ -22,6 +22,10 @@ import {Books, Login, Tags} from "../../api/api";
 import {setToken, setBooks, setTags} from "../../api/common";
 
 export default {
+  components: {
+    AtListItem,
+    AtList
+  },
   setup() {
     const info = reactive({
       avatarUrl: "/static/img/tabbar/me.png",
@@ -53,7 +57,7 @@ export default {
         }
       )
     }
-    console.log("login")
+    console.log("i am me book")
     login()
 
     return {
@@ -77,11 +81,29 @@ export default {
           desc: '获取头像等信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
           success: ({userInfo}) => {
             // 开发者妥善保管用户快速填写的头像昵称，避免重复弹窗
-            // todo 保存用户信息
-          }
-        })
-      }
+            Taro.login({
+              success: async function (res) {
+                if (res.code) {
+                  //发起网络请求
+                  const {accessToken, avatarUrl: aUrl, name} = await Login({code: res.code, avatarUrl: userInfo.avatarUrl, name: userInfo.nickName})
+                  setToken(accessToken)
+                  info.name = name
+                  info.avatarUrl = aUrl
 
+                  const books = await Books()
+                  setBooks(books)
+                  info.booksCount = books.length.toString()
+
+                  const tags = await Tags()
+                  setTags(tags)
+                  info.tagsCount = tags.length.toString()
+                } else {
+                  console.log('登录失败！' + res.errMsg)
+                }
+              }
+        })
+          }})
+      }
     }
   }
 }

@@ -25,20 +25,20 @@ type Book struct {
 }
 
 type Tag struct {
-	ID          string `json:"id"`
-	Name        string `json:"name"`
-	CreatedTime int    `json:"createdTime"`
-	Priority    int    `json:"priority"`
+	ID          string `json:"id,optional"`
+	Name        string `json:"name,optional"`
+	CreatedTime int    `json:"createdTime,optional"`
+	Priority    int    `json:"priority,optional"`
 }
 
 type Journal struct {
-	ID     string `json:"id,optional"`
-	Name   string `json:"name,optional"`
-	Date   int    `json:"date,optional"`
-	Tid    string `json:"tid,optional"`
-	Tname  string `json:"tname,optional"`
-	Amount string `json:"amount,optional"`
-	Record string `json:"record,optional"`
-	BookID string `json:"bookID,optional" form:"bookID"`
-	Uid    string `json:"uid,optional"`
+	ID     string `json:"id,optional" form:"id,optional"`
+	Name   string `json:"name,optional" form:"name,optional"`
+	Date   int    `json:"date,optional" form:"date,optional"`
+	Tid    string `json:"tid,optional" form:"tid,optional"`
+	Tname  string `json:"tname,optional" form:"tname,optional"`
+	Amount string `json:"amount,optional" form:"amount,optional"`
+	Record string `json:"record,optional" form:"record,optional"`
+	BookID string `json:"bookID,optional" form:"bookID,optional"`
+	Uid    string `json:"uid,optional" form:"uid,optional"`
 }

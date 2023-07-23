@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	"fmt"
 	"huahua_account_backend/account/internal/model"
 	"time"
 
@@ -12,25 +11,25 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type CreateJournalLogic struct {
+type UpdateJournalLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewCreateJournalLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateJournalLogic {
-	return &CreateJournalLogic{
+func NewUpdateJournalLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateJournalLogic {
+	return &UpdateJournalLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *CreateJournalLogic) CreateJournal(req *types.Journal) (resp *types.Journal, err error) {
-
+func (l *UpdateJournalLogic) UpdateJournal(req *types.Journal) (resp *types.Journal, err error) {
 	uid := getUserID(l.ctx)
 
 	journal := &model.BookJournal{
+		ID:     req.ID,
 		Amount: req.Amount,
 		Name:   req.Name,
 		Date:   time.UnixMilli(int64(req.Date)),
@@ -40,8 +39,8 @@ func (l *CreateJournalLogic) CreateJournal(req *types.Journal) (resp *types.Jour
 		BookID: req.BookID,
 		Uid:    uid,
 	}
-	fmt.Println(journal)
-	err = l.svcCtx.BookJournalModel.Create(context.Background(), journal)
+
+	err = l.svcCtx.BookJournalModel.Update(context.Background(), journal)
 	if err != nil {
 		return nil, err
 	}
@@ -56,6 +55,5 @@ func (l *CreateJournalLogic) CreateJournal(req *types.Journal) (resp *types.Jour
 		BookID: journal.BookID,
 		Uid:    journal.Uid,
 	}
-
 	return
 }

@@ -4,31 +4,48 @@
       <picker
         mode='date'
         fields="month"
-        :value="dateSel"
+        :value="pageData.dateSel"
         @change="handleDateChange"
       >
-        <at-list-item :title="dateSel" hasBorder/>
+        <view class="at-list__item">
+          <text class="">{{ pageData.dateSel }}</text>
+          <text class="">{{ pageData.allAmount }}</text>
+        </view>
       </picker>
       <picker
         mode='selector'
         rangeKey="name"
-        :range="bookSelector"
-        :value="bookSelectorValue"
-        @change="handleBookChange"
-        @cancel="handleCancel"
+        :range="pageData.bookSelector"
+        :value="pageData.bookSelectorValue"
+        @change="this.handleBookChange"
+        @cancel="this.handleCancel"
       >
-        <at-list-item :title="bookSelector[bookSelectorValue].name" hasBorder/>
+        <at-list-item
+          :title="pageData.bookSelector&&pageData.bookSelector.length>0? pageData.bookSelector[pageData.bookSelectorValue].name:''"
+          hasBorder/>
       </picker>
-      <at-swipe-action
-        v-for="(item, index) in bookJournals"
-        :key="item.id"
-        :options="OPTIONS"
-        :isOpened="item.isOpened"
-        @click="(item, key) => handleClicked(item, key ,index)"
-        @opened="handleSingle(index)"
-      >
-        <at-list-item :title="item.tname" hasBorder/>
-      </at-swipe-action>
+      <view v-for="(item1, index) in pageData.data" :key="index">
+        <view class="at-list__item day_info">
+          <text>{{ item1.date }}</text>
+          <text>{{ item1.allAmount.toString() }}</text>
+        </view>
+        <at-swipe-action
+          v-for="(item, index) in item1.data"
+          :key="item.id"
+          :options="pageData.OPTIONS"
+          :isOpened="item.isOpened"
+          @click="(opt_item, key) => handleClicked(opt_item, item, key ,index)"
+          @opened="(index) => handleSingle(item)"
+        >
+          <view class="at-list__item">
+            <text class="j_name">{{ item.name }}</text>
+            <text class="j_tname"> ({{ item.tname }})</text>
+            <text class="j_date"> {{ formatTime(item.date) }}</text>
+            <text class="j_amount"> {{ item.amount }}</text>
+          </view>
+        </at-swipe-action>
+      </view>
+
     </at-list>
   </view>
 
@@ -36,88 +53,120 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, reactive, ref, onMounted} from "vue"
+import {defineComponent, reactive} from "vue"
+import Decimal from "decimal.js"
 import Taro from "@tarojs/taro"
 import "./index.scss"
-import { getBooks } from "../../api/common";
-import {BookJournals} from "../../api/api";
+import moment from "moment";
+import {getBooks, OPTIONS, DEL_OPTION_INDEX, UPD_OPTION_INDEX} from "../../api/common";
+import {AtListItem, AtList, AtSwipeAction} from 'taro-ui-vue3'
+import {BookJournals, Books, DeleteBookJournal} from "../../api/api";
 
 export default defineComponent({
-  name: "SwipeActionDemo22",
-  async  mounted() {
-    console.log('onMounted')
-    const data:[] = await  BookJournals(this.bookSelector[0].id)
-    data.map((item) => {
-      item.isOpened = false
-      return item
-    })
-    console.log(data)
-    this.bookJournals.push(...data)
+  components: {
+    AtListItem,
+    AtSwipeAction,
+    AtList
+  },
+  methods: {
+    handleClicked(opt_item, item, key, index) {
+      console.log(`点击了${opt_item.text}按钮，key: ${key}, index:${index}`)
+      if (key === DEL_OPTION_INDEX) {
+        console.log(item)
+        DeleteBookJournal(item.id).then(() => {
+          this.getBookJournals()
+        })
+      } else if (key === UPD_OPTION_INDEX) {
+
+        console.log(`/pages/tabBar_edit/index?data=${JSON.stringify(item)}`)
+        Taro.navigateTo({
+          url: `/pages/tabBar_edit/index?data=${JSON.stringify(item)}`
+        })
+      }
+    },
+    async getBookJournals() {
+      if (!this.pageData.bookSelector[0]) {
+        return
+      }
+      const data: [] = await BookJournals({
+        bookID: this.pageData.bookSelector[0].id,
+        date: parseInt(moment(this.pageData.dateSel).format("x"))
+      })
+      this.setPageData_data(data)
+    },
+    handleBookChange(e) {
+      this.pageData.bookSelectorValue = e.detail.value
+    },
+    async handleDateChange(e) {
+      this.pageData.dateSel = e.detail.value
+      await this.getBookJournals()
+    },
+    formatTime(t) {
+      return moment(t).format('HH:mm')
+    },
+    setPageData_data(data) {
+      this.pageData.data = []
+      this.pageData.allAmount = new Decimal(0)
+      if (!data || data.length === 0) {
+        return
+      }
+      let c = {}
+      data.map((obj) => {
+        const date = moment(obj.date)
+        const day = date.format("D")
+        if (!c[day]) {
+          c[day] = {
+            data: [],
+            allAmount: new Decimal(0),
+            date: date.format("MM-DD"),
+          };
+          this.pageData.data.push(c[day])
+        }
+        c[day].data.push(obj);
+
+        c[day].allAmount = c[day].allAmount.add(new Decimal(obj.amount));
+        this.pageData.allAmount = this.pageData.allAmount.add(new Decimal(obj.amount));
+        return obj
+      })
+    }
+  },
+  async onPullDownRefresh() {
+    this.pageData.bookSelector = getBooks()
+    await this.getBookJournals()
+    Taro.stopPullDownRefresh()
+  },
+  async onShow() {
+    console.log('onShow')
+    this.pageData.bookSelector = await Books()
+    await this.getBookJournals()
   },
   setup() {
-    const OPTIONS = ref([
-      {
-        text: '删除',
-        style: {
-          color: '#333',
-          backgroundColor: '#F7F7F7'
-        }
-      },
-      {
-        text: '详情',
-        style: {
-          backgroundColor: '#E93B3D'
-        }
-      }
-    ])
-    const dateSel = ref('2022-06')
-    const bookSelector = getBooks()
-    let bookJournals =  reactive([])
-
-    function handleClick(item, key) {
-      showToast(`点击了${item.text}按钮，key: ${key}`)
-      console.log(arguments)
-    }
-
-    function handleClicked(item, key, index) {
-      showToast(`点击了${item.text}按钮，key: ${key}, index:${index}`)
-      console.log(key === 1)
-      if (key === 1) {
-      } else {
-        bookJournals = bookJournals.filter((_item, key) => key !== index)
-      }
-    }
-
-    function handleSingle(index) {
-      bookJournals = bookJournals.map((item, key) => {
-        item.isOpened = key === index
-        return item
-      })
-    }
-    function handleDateChange(e) {
-      dateSel.value = e.detail.value
-    }
-
-    function showToast(titleMsg) {
-      Taro.showToast({
-        icon: 'none',
-        title: titleMsg
-      })
-    }
-    const bookSelectorValue = ref(0)
-    return {
-      bookJournals,
+    let pageData = reactive({
+      data: [],
       OPTIONS,
-      dateSel,
-      bookSelector,
-      bookSelectorValue,
-      handleClick,
-      handleDateChange,
-      handleClicked,
-      handleBookChange:(e)=>{
-        bookSelectorValue.value = e.detail.value
-      },
-      handleCancel:(e)=>{
+      allAmount: new Decimal(0),
+      bookSelectorValue: 0,
+      bookSelector: [],
+      dateSel: moment().format('YYYY-MM')
+    })
+
+    function handleSingle(item) {
+      pageData.data.map((item1) => {
+        item1.data = item1.data.map((item2) => {
+          if (item2.id === item.id) {
+            item2.isOpened = true
+            return item2
+          }
+          item2.isOpened = false
+          return item2
+        })
+        return item1
+      })
+    }
+
+    return {
+      pageData,
+      handleCancel: (e) => {
         console.log('handleCancel', e)
       },
       handleSingle

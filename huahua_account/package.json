@@ -50,6 +50,7 @@
     "@tarojs/runtime": "3.6.5",
     "@tarojs/shared": "3.6.5",
     "@tarojs/taro": "3.6.5",
+    "decimal.js": "^10.4.3",
     "element-plus": "^2.3.3",
     "moment": "^2.29.4",
     "taro-ui-vue3": "^1.0.0-alpha.21",

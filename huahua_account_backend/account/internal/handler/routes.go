@@ -43,6 +43,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: createJournalHandler(serverCtx),
 			},
 			{
+				Method:  http.MethodPut,
+				Path:    "/journal",
+				Handler: updateJournalHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodDelete,
+				Path:    "/journal",
+				Handler: deleteJournalHandler(serverCtx),
+			},
+			{
 				Method:  http.MethodGet,
 				Path:    "/journal",
 				Handler: journalListHandler(serverCtx),

@@ -48,7 +48,7 @@ func (c *customTagModel) Create(ctx context.Context, tag *Tag) error {
 
 func (c *customTagModel) FindByUserID(ctx context.Context, uid string) ([]*Tag, error) {
 	var tags []*Tag
-	err := c.db.Where("uid = ?", uid).Find(&tags).Error
+	err := c.db.Where("uid = ?", uid).Order("created_at Desc").Find(&tags).Error
 	if err != nil {
 		return nil, err
 	}

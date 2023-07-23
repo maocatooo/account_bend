@@ -28,7 +28,7 @@ func NewUserModel(db *gorm.DB) UserModel {
 type (
 	UserModel interface {
 		FindByOpenid(context.Context, string) (*User, error)
-		Create(context.Context, *User) error
+		Save(context.Context, *User) error
 	}
 	customUserModel struct {
 		db *gorm.DB
@@ -44,9 +44,9 @@ func (c *customUserModel) FindByOpenid(ctx context.Context, openid string) (*Use
 	return &res, nil
 }
 
-func (c *customUserModel) Create(ctx context.Context, user *User) error {
+func (c *customUserModel) Save(ctx context.Context, user *User) error {
 	if user.ID == "" {
 		user.ID = uuid.New()
 	}
-	return c.db.Create(user).Error
+	return c.db.Save(user).Error
 }

@@ -11,6 +11,7 @@
       <at-list-item :title="item.name"  hasBorder />
     </at-swipe-action>
   </at-list>
+
 </template>
 
 <script lang="ts">
@@ -18,8 +19,14 @@ import {defineComponent, reactive, ref, toRefs} from "vue"
 import Taro from "@tarojs/taro"
 import "./index.scss"
 import { getBooks } from "../../../api/common";
+import { AtListItem, AtList, AtSwipeAction } from 'taro-ui-vue3'
 
 export default defineComponent({
+  components: {
+    AtListItem,
+    AtSwipeAction,
+    AtList
+  },
   setup() {
     const OPTIONS = ref([
       {

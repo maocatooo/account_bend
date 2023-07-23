@@ -25,7 +25,7 @@ func NewJournalListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Journ
 
 func (l *JournalListLogic) JournalList(req *types.Journal) (resp []*types.Journal, err error) {
 
-	journals, err := l.svcCtx.BookJournalModel.FindByBookId(context.Background(), req.BookID)
+	journals, err := l.svcCtx.BookJournalModel.FindByTypes(context.Background(), req)
 	if err != nil {
 		return
 	}
@@ -34,7 +34,8 @@ func (l *JournalListLogic) JournalList(req *types.Journal) (resp []*types.Journa
 		resp = append(resp, &types.Journal{
 			ID:     journal.ID,
 			Amount: journal.Amount,
-			Date:   int(journal.Date.Unix()),
+			Name:   journal.Name,
+			Date:   int(journal.Date.UnixMilli()),
 			Tid:    journal.Tid,
 			Tname:  journal.Tname,
 			Record: journal.Record,

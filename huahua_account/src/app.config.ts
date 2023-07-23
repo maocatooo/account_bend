@@ -3,6 +3,7 @@ export default defineAppConfig({
     'pages/tabBar_book/index',
     'pages/tabBar_me/index',
     'pages/tabBar_add/index',
+    'pages/tabBar_edit/index',
     'pages/me/book/index',
     'pages/me/tag/index',
   ],
