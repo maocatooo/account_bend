@@ -12,6 +12,11 @@ import (
 var db *gorm.DB
 
 func TestMain(t *testing.M) {
+
+	os.Exit(t.Run())
+}
+
+func TestEmpty(t *testing.T) {
 	conf := config.Config{}
 	conf.Mysql.DataSource = "root:123456@tcp(192.168.163.121:3306)/huahua_account_backend?parseTime=true"
 	db = NewDatabase(conf)
@@ -23,11 +28,6 @@ func TestMain(t *testing.M) {
 		&BookJournal{},
 		&TagRel{},
 	)
-
-	os.Exit(t.Run())
-}
-
-func TestEmpty(t *testing.T) {
 
 }
 

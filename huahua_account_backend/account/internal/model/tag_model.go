@@ -31,6 +31,7 @@ func NewTagModel(db *gorm.DB) TagModel {
 
 type TagModel interface {
 	Create(ctx context.Context, tag *Tag) error
+	Updates(ctx context.Context, tag *Tag, updates map[string]any) error
 	FindByUserID(ctx context.Context, uid string) ([]*Tag, error)
 	CreateTagRel(ctx context.Context, at *TagRel) error
 }
@@ -48,11 +49,18 @@ func (c *customTagModel) Create(ctx context.Context, tag *Tag) error {
 
 func (c *customTagModel) FindByUserID(ctx context.Context, uid string) ([]*Tag, error) {
 	var tags []*Tag
-	err := c.db.Where("uid = ?", uid).Order("created_at Desc").Find(&tags).Error
+	err := c.db.Debug().Select("tag.*, count( book_journal.tid) as ct").Model(Tag{}).
+		Joins("left join  book_journal on book_journal.tid = tag.id ").
+		Where("tag.uid = ? ", uid).Group("tag.id").Order("ct Desc, tag.created_at Desc").Find(&tags).Error
 	if err != nil {
 		return nil, err
 	}
 	return tags, nil
+}
+
+func (c *customTagModel) Updates(ctx context.Context, tag *Tag, updates map[string]any) error {
+	return c.db.Model(tag).Where("id = ?", tag.ID).Updates(updates).Error
+
 }
 
 func (c *customTagModel) CreateTagRel(ctx context.Context, at *TagRel) error {

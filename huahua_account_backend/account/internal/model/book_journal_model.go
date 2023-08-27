@@ -37,6 +37,7 @@ type (
 		DeleteById(context.Context, string) error
 		FindByBookId(context.Context, string) ([]*BookJournal, error)
 		FindByTypes(context.Context, *types.Journal) ([]*BookJournal, error)
+		NamePrompt(ctx context.Context, uid, tid string) ([]string, error)
 	}
 	customBookJournalModel struct {
 		db *gorm.DB
@@ -87,4 +88,24 @@ func (c *customBookJournalModel) FindByTypes(ctx context.Context, tps *types.Jou
 		return nil, err
 	}
 	return journals, nil
+}
+
+func (c *customBookJournalModel) NamePrompt(ctx context.Context, uid, tid string) ([]string, error) {
+	var res []struct {
+		Name string
+	}
+	db := c.db.Model(&BookJournal{}).Where("uid = ?", uid)
+	if tid != "" {
+		db = db.Where("tid = ?", tid)
+	}
+	err := db.Select("name, count(name) as c").Group("name").Order("c desc").Limit(10).Find(&res).Error
+	if err != nil {
+		return nil, err
+	}
+	var s []string
+	for _, item := range res {
+		s = append(s, item.Name)
+	}
+
+	return s, nil
 }

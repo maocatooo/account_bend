@@ -38,6 +38,7 @@ func (l *TagListLogic) TagList() (resp []*types.Tag, err error) {
 			Name:        v.Name,
 			CreatedTime: int(v.CreatedAt.UnixMilli()),
 			Priority:    v.Priority,
+			Icon:        v.Icon,
 		}
 	}
 	return

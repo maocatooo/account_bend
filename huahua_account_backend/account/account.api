@@ -26,6 +26,7 @@ type (
 		Name        string `json:"name,optional"`
 		CreatedTime int    `json:"createdTime,optional"`
 		Priority    int    `json:"priority,optional"`
+		Icon        string `json:"icon,optional"`
 	}
 	Journal {
 		ID     string `json:"id,optional" form:"id,optional"`
@@ -37,6 +38,9 @@ type (
 		Record string `json:"record,optional" form:"record,optional"`
 		BookID string `json:"bookID,optional" form:"bookID,optional"`
 		Uid    string `json:"uid,optional" form:"uid,optional"`
+	}
+	Tid {
+		Tid string `json:"tid,optional" form:"tid,optional"`
 	}
 )
 
@@ -63,9 +67,20 @@ service account-api {
 	get /tag  returns ([]*Tag)
 	
 	@server(
+		handler: NamePrompt
+	)
+	get /name_prompt(Tid)  returns ([]string )
+	
+	@server(
 		handler: createTag
 	)
 	post /tag (Tag) returns (Tag)
+	
+	@server(
+		handler: updateTag
+	)
+	put /tag (Tag) returns (Tag)
+	
 	@server(
 		handler: createJournal
 	)

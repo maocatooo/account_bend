@@ -29,6 +29,7 @@ type Tag struct {
 	Name        string `json:"name,optional"`
 	CreatedTime int    `json:"createdTime,optional"`
 	Priority    int    `json:"priority,optional"`
+	Icon        string `json:"icon,optional"`
 }
 
 type Journal struct {
@@ -41,4 +42,8 @@ type Journal struct {
 	Record string `json:"record,optional" form:"record,optional"`
 	BookID string `json:"bookID,optional" form:"bookID,optional"`
 	Uid    string `json:"uid,optional" form:"uid,optional"`
+}
+
+type Tid struct {
+	Tid string `json:"tid,optional" form:"tid,optional"`
 }

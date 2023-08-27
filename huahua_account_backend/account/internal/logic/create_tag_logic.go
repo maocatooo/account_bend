@@ -30,6 +30,7 @@ func (l *CreateTagLogic) CreateTag(req *types.Tag) (resp *types.Tag, err error) 
 		Name:     req.Name,
 		Uid:      uid,
 		Priority: req.Priority,
+		Icon:     req.Icon,
 	}
 
 	err = l.svcCtx.TagModel.Create(context.Background(), tag)
@@ -40,6 +41,7 @@ func (l *CreateTagLogic) CreateTag(req *types.Tag) (resp *types.Tag, err error) 
 		ID:       tag.ID,
 		Name:     tag.Name,
 		Priority: tag.Priority,
+		Icon:     tag.Icon,
 	}
 	return
 }

@@ -33,9 +33,19 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: tagListHandler(serverCtx),
 			},
 			{
+				Method:  http.MethodGet,
+				Path:    "/name_prompt",
+				Handler: NamePromptHandler(serverCtx),
+			},
+			{
 				Method:  http.MethodPost,
 				Path:    "/tag",
 				Handler: createTagHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPut,
+				Path:    "/tag",
+				Handler: updateTagHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
