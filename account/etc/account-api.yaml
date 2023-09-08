@@ -1,0 +1,11 @@
+Name: account-api
+Host: 0.0.0.0
+Port: 8888
+Auth:
+  AccessSecret: "abcdefgh"
+  AccessExpire: 259200
+Mysql:
+  DataSource: "root:123456@tcp(192.168.163.121:3306)/account_bend?parseTime=true"
+Wechat:
+  AppID: xxx
+  AppSecret: xxx
